@@ -51,10 +51,43 @@ app.post("/add", async (req, res) => {
   }
 });
 
+//UPDATE items SET title = req
+app.post("/edit", async (req, res) => {
 
-app.post("/edit", (req, res) => {});
+  const id = req.body.updatedItemId;
+  const edit = req.body.updatedItemTitle;
 
-app.post("/delete", (req, res) => {});
+  console.log( "este es id: " + id);
+  console.log("este es edit: " + edit);
+  try {
+    const result = db.query(`UPDATE items SET title = ($1) WHERE id=$2`,[edit, id]);
+    res.redirect("/");
+  }catch (err) {
+    console.log(err);
+  }
+
+});
+
+
+
+app.post("/delete", async (req, res) => {
+
+  const idDelete = req.body.deleteItemId;
+
+  console.log( "this is the id to be deleted: " + idDelete);
+
+  try {
+    const result = db.query("DELETE FROM items WHERE id = $1", [idDelete]);
+    res.redirect("/");
+  }catch (err) {
+    console.log(err);
+  }
+
+});
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
