@@ -26,28 +26,31 @@ db.connect()
 .then(() => console.log('Conectado a la base de datos'))
 .catch(err => console.error('Error al conectar a la base de datos', err.stack));
   
-db.query("SELECT * FROM items", (err, res) => {
-  if (err) {
-    console.error("Error executing query", err.stack);
-  } else {
-    items = res.rows;
+app.get("/", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM items ORDER BY id ASC");
+    items = result.rows;
+
+    res.render("index.ejs", {
+      listTitle: "Today",
+      listItems: items,
+    });
+  } catch (err) {
+    console.log(err);
   }
-  db.end();
 });
 
-
-app.get("/", (req, res) => {
-  res.render("index.ejs", {
-    listTitle: "Today",
-    listItems: items,
-  });
-});
-
-app.post("/add", (req, res) => {
+app.post("/add", async (req, res) => {
   const item = req.body.newItem;
-  items.push({ title: item });
-  res.redirect("/");
+  // items.push({title: item});
+  try {
+    await db.query("INSERT INTO items (title) VALUES ($1)", [item]);
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 });
+
 
 app.post("/edit", (req, res) => {});
 
