@@ -60,7 +60,7 @@ app.post("/edit", async (req, res) => {
   console.log( "este es id: " + id);
   console.log("este es edit: " + edit);
   try {
-    const result = db.query(`UPDATE items SET title = ($1) WHERE id=$2`,[edit, id]);
+    const result = await db.query(`UPDATE items SET title = ($1) WHERE id=$2`,[edit, id]);
     res.redirect("/");
   }catch (err) {
     console.log(err);
@@ -77,7 +77,7 @@ app.post("/delete", async (req, res) => {
   console.log( "this is the id to be deleted: " + idDelete);
 
   try {
-    const result = db.query("DELETE FROM items WHERE id = $1", [idDelete]);
+    const result = await db.query("DELETE FROM items WHERE id = $1", [idDelete]);
     res.redirect("/");
   }catch (err) {
     console.log(err);
