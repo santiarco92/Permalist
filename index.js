@@ -1,13 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import credentials from "./credentials";
 
 
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "Permalist",
-  password: "misprimos92",
+  password: credentials,
   port: 5432,
 });
 
@@ -60,7 +61,7 @@ app.post("/edit", async (req, res) => {
   console.log( "este es id: " + id);
   console.log("este es edit: " + edit);
   try {
-    const result = await db.query(`UPDATE items SET title = ($1) WHERE id=$2`,[edit, id]);
+    await db.query(`UPDATE items SET title = ($1) WHERE id=$2`,[edit, id]);
     res.redirect("/");
   }catch (err) {
     console.log(err);
@@ -77,7 +78,7 @@ app.post("/delete", async (req, res) => {
   console.log( "this is the id to be deleted: " + idDelete);
 
   try {
-    const result = await db.query("DELETE FROM items WHERE id = $1", [idDelete]);
+    await db.query("DELETE FROM items WHERE id = $1", [idDelete]);
     res.redirect("/");
   }catch (err) {
     console.log(err);
